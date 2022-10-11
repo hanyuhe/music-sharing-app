@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@types/source-map": "^0.5.2"
+  }
+}

@@ -11,7 +11,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Collapse } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-
+import { withRouter } from "react-router";
 
 export default class CreateRoomPage extends Component {
     static defaultProps = {
@@ -61,7 +61,7 @@ export default class CreateRoomPage extends Component {
         fetch("/api/create-room", requestOptions) //fetch the backend api and send the requestOptions
           .then((response) => response.json()) // turn the response to json
           .then((data) => console.log(data)); // and print in the console
-          // .then((data) => this.props.history.push("/room/" + data.code));
+          // .then((data) => this.props.history.push("/room/" + data.code));   
       }
     
     handleUpdateButtonPressed() {
@@ -206,3 +206,5 @@ export default class CreateRoomPage extends Component {
         )
     }
 }
+
+

@@ -3,6 +3,7 @@ import { useNavigate, Navigate, useParams } from "react-router-dom";
 import { Grid, Button, Typography } from "@material-ui/core";
 import { Link, Route } from "react-router-dom";
 import CreateRoomPage from "./CreateRoomPage";
+import MusicPlayer from "./MusicPlayer";
 
 
 export default function Room(props){
@@ -12,6 +13,7 @@ export default function Room(props){
         isHost: false,
         showSettings: false,
         spotifyAuthenticated: false,
+        song:{},
     }
     const [roomData, setRoomData] = useState(initialState) 
     const { roomCode } = useParams()
@@ -22,9 +24,8 @@ export default function Room(props){
       }
     <Route path='/room/:roomCode' element={<Room clearRoomCodeCallback={clearRoomCode} />} />
 
-
-    useEffect(() => {
-        fetch("/api/get-room?code=" + roomCode)
+    const getRoomDetails = () => {
+      fetch("/api/get-room?code=" + roomCode)
           .then(res => {
             if (!res.ok) {
               props.clearRoomCodeCallback; // clears roomCode state in HomePage
@@ -38,17 +39,24 @@ export default function Room(props){
               votesToSkip: data.votes_to_skip,
               guestCanPause: data.guest_can_pause,
               isHost: data.is_host,
-            })                     
+            });
+            if (roomData.isHost) {
+              authenticateSpotify();
+            }                     
           })
-      // },[roomData,setRoomData]);
-      },[roomCode, setRoomData]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
-    
+    }
+
     useEffect(() => {
-      console.log(roomData);
-      if (roomData.isHost) {
-        authenticateSpotify();
-      }
-    }, [roomData]);
+      getRoomDetails();
+      console.log(roomData)
+      },[]); //It renders when the object changes .If we use roomData and/or roomCode then it rerenders infinite times
+    
+    // check and render the current song every second; clearIntervel
+    useEffect(() => {
+      getCurrentSong();
+      // setInterval(() => getCurrentSong, 1000);
+      },[roomData]); 
+
     
     const authenticateSpotify = () => {
       // fetch auth state
@@ -60,6 +68,7 @@ export default function Room(props){
           spotifyAuthenticated: data.status,
         });
         console.log(data.status);
+        console.log(roomData);
         // if not authenticated, redirect to spotify auth page
         if (!data.status) {
           fetch("/spotify/get-auth-url")
@@ -68,10 +77,30 @@ export default function Room(props){
               window.location.replace(data.url);
             });
         }
+      }).catch((error)=>{
+        console.log(error)
       });
     }
     
+
+    const getCurrentSong = () => {
+      fetch("/spotify/current-song")
+        .then((response) => {
+          if (!response.ok) {
+            return {};
+          } else {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          setRoomData({
+            song: data
+          });
+          console.log(data);
+        });
+    }
     
+
     const leaveBottonPressed = () => {
       const requestOptions = {
         method: "POST",
@@ -90,7 +119,6 @@ export default function Room(props){
         ...roomData,
         showSettings: value,
       });
-      setTimeout(() => console.log(roomData));
     }
 
 
@@ -103,7 +131,7 @@ export default function Room(props){
               votesToSkip={roomData.votesToSkip}
               guestCanPause={roomData.guestCanPause}
               roomCode={roomCode}
-              // updateCallback={this.getRoomDetails}
+              updateCallback={getRoomDetails}
             />
           </Grid>
           <Grid item xs={12} align="center">
@@ -139,13 +167,13 @@ export default function Room(props){
       return renderSettings();
       }
     return (       
-        <Grid container space={1}>
+        <Grid container spacing={1} >
           <Grid item xs={12} align="center">
             <Typography variant="h4" component="h4">
-              Code: {roomCode}
+              RoomCode: {roomCode}
             </Typography>
           </Grid>
-          <Grid item xs={12} align="center">
+          {/* <Grid item xs={12} align="center">
             <Typography variant="h6" component="h6">
               Votes: {roomData.votesToSkip}
             </Typography>
@@ -160,6 +188,12 @@ export default function Room(props){
               Host: {roomData.isHost.toString()}
             </Typography>
           </Grid>
+          <Grid item xs={12} align="center">
+            <Typography variant="h6" component="h6">
+              spotifyAuthenticated: {roomData.spotifyAuthenticated.toString()}
+            </Typography>
+          </Grid> */}
+          <MusicPlayer {...roomData.song} />
           {roomData.isHost ? renderSettingsButton() : null}
           <Grid item xs={12} align="center">
             <Button variant="contained" color="secondary" onClick={leaveBottonPressed}>

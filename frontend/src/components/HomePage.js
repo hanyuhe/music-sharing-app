@@ -5,7 +5,9 @@ import Room from "./Room"
 import { BrowserRouter as Router, Routes, Route, Link, Navigate, } from "react-router-dom";
 import { Grid, Button, ButtonGroup, Typography } from "@material-ui/core";
 
+import {createBrowserHistory} from 'history'
 
+const history = createBrowserHistory()
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
@@ -54,22 +56,11 @@ export default class HomePage extends Component {
       });
     }
 
-    // render() {
-    //     return (
-    //         <Router>
-    //             <Routes>
-    //                 <Route exact path='/' element={ this.renderHomePage() }/>
-    //                 <Route path='/join' element={<RoomJoinPage />}/>
-    //                 <Route path='/create' element={<CreateRoomPage />}/>                   
-    //                 <Route path='/room/:roomCode' element={<Room />}/>  
-    //             </Routes>
-    //         </Router>
-    //     )
-    // }
+
 
     render() {
       return (
-        <Router>
+        <Router history={history}>
           <Routes>
             <Route
               exact path="/"
@@ -82,6 +73,7 @@ export default class HomePage extends Component {
             />
             <Route path="/join" element={<RoomJoinPage />} />
             <Route path="/create" element={<CreateRoomPage />} />
+            {/* <Route path="/create" render={(routeProps) => <CreateRoomPage {...routeProps}/>} /> */}
             <Route
               path="/room/:roomCode"
               element={<Room leaveRoomCallback={this.clearRoomCode} />}

@@ -38,6 +38,7 @@ def is_spotify_authenticated(session_id):
     tokens = get_user_tokens(session_id)
     if tokens:
         expiry = tokens.expires_in
+        print("expiry: "+str(expiry))
         if expiry <= timezone.now():
             refresh_spotify_token(session_id)
 
@@ -59,11 +60,39 @@ def refresh_spotify_token(session_id):
     access_token = response.get('access_token')
     token_type = response.get('token_type')
     expires_in = response.get('expires_in')
-    refresh_token = response.get('refresh_token')
 
     update_or_create_user_tokens(
         session_id, access_token, token_type, expires_in, refresh_token)
   
 
+def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
+    tokens = get_user_tokens(session_id)
+    # print(tokens.access_token)
+    # headers = {'Content-Type': 'application/json',
+    #            'Authorization': "Bearer " + tokens.access_token}
+    cur_token = "BQCX20EPqkO2C97le5TiJTSvidCjemOv-YOPm2JM82amwjjZC5LQO0QRfQuT973Kxdwx4L8wbLiLYlWgLvtUYNK1rbvXOKomhZWQsLnNOL2I69mPrX5uFDu50rK9igS-5pmFtaE2l2flHZExra9f12Jk0nb_r7d6bmzMfgeDuGEiE4xN49QLHZb_IbOyNWo94SMr3s0z7OCi"
+    headers = {'Content-Type': 'application/json',
+               'Authorization': "Bearer " + cur_token}
+
+    if post_:
+        post(BASE_URL + endpoint, headers=headers)
+    if put_:
+        put(BASE_URL + endpoint, headers=headers)
+
+    response = get(BASE_URL + endpoint, {}, headers=headers)
+    try:
+        return response.json()
+    except:
+        return {'Error': 'Issue with request'}
 
 
+def play_song(session_id):
+    return execute_spotify_api_request(session_id, "player/play", put_=True)
+
+
+def pause_song(session_id):
+    return execute_spotify_api_request(session_id, "player/pause", put_=True)
+
+
+def skip_song(session_id):
+    return execute_spotify_api_request(session_id, "player/next", post_=True)
