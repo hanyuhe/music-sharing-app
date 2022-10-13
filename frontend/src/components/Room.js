@@ -88,12 +88,13 @@ export default function Room(props){
         .then((response) => {
           if (!response.ok) {
             return {};
-          } else {
+          } else {           
             return response.json();
           }
         })
         .then((data) => {
           setRoomData({
+            ...roomData,
             song: data
           });
           console.log(data);
@@ -194,8 +195,9 @@ export default function Room(props){
             </Typography>
           </Grid> */}
           <MusicPlayer {...roomData.song} />
-          {roomData.isHost ? renderSettingsButton() : null}
-          <Grid item xs={12} align="center">
+          
+          <Grid item xs={12} align="center" style={{marginTop:"40px"}}>
+            {/* {roomData.isHost ? renderSettingsButton() : null} */}
             <Button variant="contained" color="secondary" onClick={leaveBottonPressed}>
               Leave Room
             </Button>

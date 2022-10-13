@@ -36,12 +36,14 @@ export default function CreateRoomPage(props) {
 
     const handleVotesChange = (e) => {
         setState({
+          ...state,
           votesToSkip: e.target.value,
         });
       }
     
     const handleGuestCanPauseChange = (e) => {
         setState({
+          ...state,
           guestCanPause: e.target.value === "true" ? true : false,
         });
       }
@@ -57,8 +59,8 @@ export default function CreateRoomPage(props) {
         };
         fetch("/api/create-room", requestOptions) //fetch the backend api and send the requestOptions
           .then((response) => response.json()) // turn the response to json
-          .then((data) => console.log(data)); // and print in the console
-          // .then((data) => navigate("/room/" + data.code));   
+          // .then((data) => console.log(data)); // and print in the console
+          .then((data) => navigate("/room/" + data.code));   
       }
     
     const handleUpdateButtonPressed = () => {
@@ -74,10 +76,12 @@ export default function CreateRoomPage(props) {
         fetch("/api/update-room", requestOptions).then((response) => {
           if (response.ok) {
             setState({
+              ...state,
               successMsg: "Room updated successfully!",
             });
           } else {
             setState({
+              ...state,
               errorMsg: "Error updating room...",
             });
           }
@@ -132,7 +136,9 @@ export default function CreateRoomPage(props) {
                         <Alert
                           severity="success"
                           onClose={() => {
-                            setState({ successMsg: "" });
+                            setState({ 
+                              ...state,
+                              successMsg: "" });
                           }}
                         >
                          {state.successMsg}
@@ -141,7 +147,9 @@ export default function CreateRoomPage(props) {
                         <Alert
                           severity="error"
                           onClose={() => {
-                          setState({ errorMsg: "" });
+                          setState({ 
+                            ...state,
+                            errorMsg: "" });
                         }}
                         >
                          {state.errorMsg}

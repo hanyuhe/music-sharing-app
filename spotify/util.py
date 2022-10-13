@@ -70,7 +70,7 @@ def execute_spotify_api_request(session_id, endpoint, post_=False, put_=False):
     # print(tokens.access_token)
     # headers = {'Content-Type': 'application/json',
     #            'Authorization': "Bearer " + tokens.access_token}
-    cur_token = "BQCX20EPqkO2C97le5TiJTSvidCjemOv-YOPm2JM82amwjjZC5LQO0QRfQuT973Kxdwx4L8wbLiLYlWgLvtUYNK1rbvXOKomhZWQsLnNOL2I69mPrX5uFDu50rK9igS-5pmFtaE2l2flHZExra9f12Jk0nb_r7d6bmzMfgeDuGEiE4xN49QLHZb_IbOyNWo94SMr3s0z7OCi"
+    cur_token = "BQCMSKqrQJaV2JmGI2Y_GnPbTWFqtZIGK0l524Quny0UfoVPg3AgornNfd1pXnUEHiY33rTZCbpIxJz3iE6sETDzfgmnHfKlJUmAThbRCaLLi-SdW8ODafj52lX9I4K5NHMoMB-LlGhszXfI8bFg7ZAta2Sy4htjefX8tXSyDgMmON1AAIOptlYmes08vRrPNQQR9nKwiIKX"
     headers = {'Content-Type': 'application/json',
                'Authorization': "Bearer " + cur_token}
 
